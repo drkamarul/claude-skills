@@ -1,12 +1,12 @@
 ---
 name: medical-research
 description: >
-  Use this skill for ANY medical or health research task — especially when KIM needs to find, evaluate, synthesize, or cite scientific literature. Trigger whenever the user asks to: search for articles, papers, or references; review evidence on a health topic; find citations for a manuscript; summarise what is known about a disease, intervention, or method; conduct a literature review or scoping review; look up epidemiological data, statistics, or burden of disease; compare treatment approaches; assess methodological quality; prepare a bibliography; answer a clinical or public health question using evidence. Also trigger for questions about non-communicable diseases (NCDs), communicable diseases, epidemiology, biostatistics, public health policy, digital health, global burden of disease (GBD), and any topic where peer-reviewed evidence is needed. Always use this skill even for seemingly simple evidence queries — it ensures source prioritisation and quality filtering are applied.
+  Use this skill for ANY medical or health research task — especially when the user needs to find, evaluate, synthesize, or cite scientific literature. Trigger whenever the user asks to: search for articles, papers, or references; review evidence on a health topic; find citations for a manuscript; summarise what is known about a disease, intervention, or method; conduct a literature review or scoping review; look up epidemiological data, statistics, or burden of disease; compare treatment approaches; assess methodological quality; prepare a bibliography; answer a clinical or public health question using evidence. Also trigger for questions about non-communicable diseases (NCDs), communicable diseases, epidemiology, biostatistics, public health policy, digital health, global burden of disease (GBD), and any topic where peer-reviewed evidence is needed. Always use this skill even for seemingly simple evidence queries — it ensures source prioritisation and quality filtering are applied.
 ---
 
 # Medical Research Skill
 
-A structured framework for finding, evaluating, and synthesising high-quality medical and public health literature for KIM's research, teaching, and clinical epidemiology work.
+A structured framework for finding, evaluating, and synthesising high-quality medical and public health literature for the user's research, teaching, and clinical epidemiology work.
 
 ---
 
@@ -50,13 +50,13 @@ When multiple sources cover the same topic, apply this ranking:
 2. **Systematic reviews and meta-analyses** → Highest evidence level; prioritise
 3. **RCTs and cohort studies** → Strong evidence; include
 4. **Recency bonus**: For rapidly evolving fields (e.g., COVID-19, AI in health), prefer articles from the last 3–5 years even if citation count is lower
-5. **Regional relevance**: For KIM's work, up-weight Malaysian, ASEAN, or low-middle-income country (LMIC) studies even with lower citations
+5. **Regional relevance**: For the user's work, up-weight Malaysian, ASEAN, or low-middle-income country (LMIC) studies even with lower citations
 
 ---
 
 ## Priority Research Domains
 
-Apply extra rigour and broader searches for these fields (KIM's core areas):
+Apply extra rigour and broader searches for these fields (the user's core areas):
 
 - **Epidemiology** — study design, causal inference, DAGs, bias, confounding
 - **Biostatistics** — regression, survival analysis, mixed models, machine learning in health
@@ -153,7 +153,7 @@ Default to **Vancouver** (numbered) for medical journals; offer APA or Harvard o
 
 ## Quality Assessment Quick Checklist
 
-When evaluating a study for KIM:
+When evaluating a study for the user:
 
 | Criterion | Check |
 |---|---|
@@ -199,5 +199,5 @@ When evaluating a study for KIM:
 - When PubMed MCP tool is connected, use it directly for structured queries
 - Combine with **web_search** for citation counts and full-text access
 - Use **web_fetch** on DOI links or PubMed abstract pages to get full details
-- For KIM's manuscript preparation, flag articles suitable for introduction, methods justification, or discussion sections
+- For the user's manuscript preparation, flag articles suitable for introduction, methods justification, or discussion sections
 - Always note if an article is open-access (OA) for easy retrieval
