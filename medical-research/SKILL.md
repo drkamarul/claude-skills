@@ -42,6 +42,23 @@ Always retrieve and present sources in this order of priority:
 
 ---
 
+## Search and Filters
+
+Search the keywords and terms based on 
+- MESH 
+- Title and abstract 
+- Keywords
+
+### Prioritize literatures (papers, publications) based on these filder
+
+- English language
+- Human 
+- Open access 
+- Year of publication should be less than 7 years 
+
+
+---
+
 ## Citation Priority Filter
 
 When multiple sources cover the same topic, apply this ranking:
