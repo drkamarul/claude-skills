@@ -1,7 +1,7 @@
 ---
 name: medical-research
 description: >
-  Use this skill for ANY medical or health research task — especially when the user needs to find, evaluate, synthesize, or cite scientific literature. Trigger whenever the user asks to: search for articles, papers, or references; review evidence on a health topic; find citations for a manuscript; summarise what is known about a disease, intervention, or method; conduct a literature review or scoping review; look up epidemiological data, statistics, or burden of disease; compare treatment approaches; assess methodological quality; prepare a bibliography; answer a clinical or public health question using evidence. Also trigger for questions about non-communicable diseases (NCDs), communicable diseases, epidemiology, biostatistics, public health policy, digital health, global burden of disease (GBD), and any topic where peer-reviewed evidence is needed. Always use this skill even for seemingly simple evidence queries — it ensures source prioritisation and quality filtering are applied.
+  Use this skill for ANY medical or health research task — especially when the user needs to find, evaluate, synthesize, or cite scientific literature or find relevant academic or research papers on pubmed, medline, web of science, scopus or google scholar. Trigger whenever the user asks to: search for articles, papers, or references; review evidence on a health topic; find citations for a manuscript; summarise what is known about a disease, intervention, or method; conduct a literature review or scoping review; look up epidemiological data, statistics, or burden of disease; compare treatment approaches; assess methodological quality; prepare a bibliography; answer a clinical or public health question using evidence. Also trigger for questions about non-communicable diseases (NCDs), communicable diseases, epidemiology, biostatistics, public health policy, digital health, global burden of disease (GBD), and any topic where peer-reviewed evidence is needed. Always use this skill even for seemingly simple evidence queries — it ensures source prioritisation and quality filtering are applied.
 ---
 
 # Medical Research Skill
@@ -19,7 +19,8 @@ Always retrieve and present sources in this order of priority:
 |---|---|---|
 | **PubMed / MEDLINE** | Biomedical & life sciences | Use via PubMed MCP tool when available; otherwise web_search with `site:pubmed.ncbi.nlm.nih.gov` |
 | **Web of Science** | Multidisciplinary, citation metrics | Prefer for citation counts and h-index data |
-| **Scopus** | Broad biomedical + social sciences | Good for ASEAN / Malaysian literature |
+| **Scopus** | Broad biomedical + social sciences 
+| **Google Scholar** | Broad biomedical + social sciences
 
 ### Tier 2 — High-Impact Journals (prioritise results from these)
 - **NEJM** (New England Journal of Medicine)
@@ -44,6 +45,8 @@ Always retrieve and present sources in this order of priority:
 
 ## Search and Filters
 
+### Search
+
 Search the keywords and terms based on 
 - MESH 
 - Title and abstract 
@@ -56,6 +59,11 @@ Search the keywords and terms based on
 - Open access 
 - Year of publication should be less than 7 years 
 
+### Keyworks and Boolean
+
+- If necessary ask users of keywords
+- Combine keywords to create Boolean operators using AND OR NOT
+- Refine search terms and search  
 
 ---
 
@@ -63,7 +71,7 @@ Search the keywords and terms based on
 
 When multiple sources cover the same topic, apply this ranking:
 
-1. **Citation count ≥ 20** → Always include; mark as highly cited
+1. **Citation count ≥ 10** → Always include; mark as highly cited
 2. **Systematic reviews and meta-analyses** → Highest evidence level; prioritise
 3. **RCTs and cohort studies** → Strong evidence; include
 4. **Recency bonus**: For rapidly evolving fields (e.g., COVID-19, AI in health), prefer articles from the last 3–5 years even if citation count is lower
@@ -165,23 +173,6 @@ Provide: Author (Year), Journal, DOI/PMID, and one-line finding.
 
 ### Citation Format
 Default to **Vancouver** (numbered) for medical journals; offer APA or Harvard on request.
-
----
-
-## Quality Assessment Quick Checklist
-
-When evaluating a study for the user:
-
-| Criterion | Check |
-|---|---|
-| Peer-reviewed journal? | ✓/✗ |
-| Sample size adequate? | ✓/✗ |
-| Appropriate study design for question? | ✓/✗ |
-| Confounding addressed? | ✓/✗ |
-| Statistical methods sound? | ✓/✗ |
-| Conflict of interest declared? | ✓/✗ |
-| Replicable / open data? | ✓/✗ |
-| Relevant to Malaysian/ASEAN context? | ✓/✗ |
 
 ---
 
