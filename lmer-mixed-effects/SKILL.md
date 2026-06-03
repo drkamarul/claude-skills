@@ -48,25 +48,14 @@ library(broom.mixed) # tidy(), augment() for lme4 objects
 ## Standard Workflow
 
 ```r
-# Step 1 — Load data; always factor the grouping variable
-dat <- read.table("../2lev-xc.txt", header = FALSE,
-  col.names = c("VRQ", "ATTAIN", "PID", "SEX", "SC", "SID")) |>
-  select(-PID) |>
-  mutate(
-    SEX = factor(SEX, levels = c(0, 1), labels = c("Boy", "Girl")),
-    SC  = factor(SC,  levels = c(1, 20, 31, 0),
-                 labels = c("Professional", "Intermediate", "Skilled", "Other")),
-    SID = factor(SID)   # grouping variable MUST be a factor
-  )
+# Step 1 — Null model (M0): baseline for ICC
+m0 <- lmer(outcome ~ 1 + (1 | group), data = dat, REML = TRUE)
 
-# Step 2 — Null model (M0): baseline for ICC
-m0 <- lmer(VRQ ~ 1 + (1 | SID), data = dat, REML = TRUE)
+# Step 2 — Random intercept model (M1)
+m1 <- lmer(outcome ~ var1 + var2 + var3 + (1 | group), data = dat, REML = TRUE)
 
-# Step 3 — Random intercept model (M1)
-m1 <- lmer(VRQ ~ ATTAIN + SEX + SC + (1 | SID), data = dat, REML = TRUE)
-
-# Step 4 — Random slope model (M2): allow ATTAIN effect to vary by school
-m2 <- lmer(VRQ ~ ATTAIN + SEX + SC + (ATTAIN | SID), data = dat, REML = TRUE)
+# Step 3 — Random slope model (M2): allow ATTAIN effect to vary by school
+m2 <- lmer(outcome ~ var1 + var2 + var3 + (var1 | group), data = dat, REML = TRUE)
 ```
 
 ## Reading `summary()` Output
@@ -126,7 +115,7 @@ lme4 intentionally omits p-values — degrees of freedom are ambiguous for unbal
 ```r
 # Option 1 — lmerTest: Satterthwaite df (recommended for most applied work)
 library(lmerTest)
-m1 <- lmer(VRQ ~ ATTAIN + SEX + SC + (1 | SID), data = dat)
+m1 <- lmer(outcome ~ var1 + var2 + var3 + (1 | group), data = dat)
 summary(m1)    # now shows Df and Pr(>|t|) columns
 
 # Option 2 — Likelihood ratio test: compare nested models
