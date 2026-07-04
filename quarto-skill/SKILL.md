@@ -1,27 +1,55 @@
 ---
 name: quarto-skill
 description: >
-  Use this skill whenever the user wants to create, write, edit, or improve a Quarto document (.qmd file).
-  Trigger on any mention of: Quarto, .qmd, quarto render, YAML front matter for documents,
-  revealjs slides in Quarto, knitr chunk options, code folding, cross-references, figure captions,
-  subfigures, callout blocks, Quarto tables, inline code, citations in Quarto, Quarto PDF,
-  Quarto HTML, Quarto Word output, Quarto dashboard, reproducible documents in R or Python,
-  execute options, fig-cap, label, echo, warning, or any authoring task that produces a .qmd file.
-  Also trigger when user asks about Quarto computations, rendering options, figure layouts, or
-  multi-format output. Even if the user just says "help me write a document in R" or "I need a
-  report with code and output", consider using this skill.
-compatibility: RStudio, VS Code, Positron, Jupyter — any environment supporting Quarto CLI
+  Use this skill whenever the user wants to create, write, edit, or improve a Quarto
+  document (.qmd) or build a slide deck / presentation with Quarto or revealjs. Trigger
+  on any mention of: Quarto, .qmd, quarto render, revealjs, Quarto slides or presentations,
+  YAML front matter, knitr chunk options, code folding, cross-references, figures, subfigures,
+  tables (kable/gt/gtsummary/DT), callout blocks, citations, page layout (column-margin,
+  column-page), Quarto PDF/HTML/Word/dashboard output, or reproducible documents in R,
+  Python, Julia, or Observable JS. Also trigger on requests like "make a slide deck",
+  "turn this into a presentation", "write a reproducible report in R", or "help me write
+  a document with code and output" even if the word Quarto is never used.
+compatibility: RStudio, VS Code, Positron, Jupyter — any environment supporting the Quarto CLI
 ---
 
 # Quarto Skill
 
-A comprehensive reference for authoring, structuring, and rendering Quarto (`.qmd`) documents — especially for reproducible research, teaching, and scientific reporting in R (with knitr).
+Author, structure, and render Quarto (`.qmd`) content — reports, articles, and slide decks
+(revealjs, PowerPoint, Beamer) — for reproducible research, teaching, and scientific
+communication in R or Python.
 
----
+## When to Use This Skill
 
-## 1. Document Structure
+- Writing or editing a `.qmd` document: reports, articles, websites, or books.
+- Building a slide deck or presentation, especially with **revealjs**.
+- Answering questions about Quarto YAML front matter, chunk options, or rendering.
+- Adding figures, tables, cross-references, callouts, or citations to a Quarto file.
+- Converting an existing R/R Markdown report into a modern Quarto document.
 
-Every Quarto document starts with **YAML front matter** between `---` delimiters:
+## Authoritative Sources
+
+Quarto's own documentation is the source of truth and changes over time. If you have
+live web access, check the relevant page below first; otherwise use the bundled
+snapshot in `references/` (each file cites the page it was derived from).
+
+| Topic | Live doc | Bundled reference |
+|-------|----------|--------------------|
+| General authoring (RStudio) | quarto.org/docs/get-started/authoring/rstudio.html | `references/authoring.md` |
+| Code execution / computations | quarto.org/docs/get-started/computations/rstudio.html | `references/computations.md` |
+| Figures | quarto.org/docs/authoring/figures.html | `references/figures.md` |
+| Tables | quarto.org/docs/authoring/tables.html | `references/tables.md` |
+| Front matter (YAML) | quarto.org/docs/authoring/front-matter.html | `references/front-matter.md` |
+| Page layout (columns/margins) | quarto.org/docs/output-formats/page-layout.html | `references/page-layout.md` |
+| Presentations (general) | quarto.org/docs/presentations/ | `references/presentations.md` |
+| RevealJS slides | quarto.org/docs/presentations/revealjs/ | `references/revealjs.md` |
+
+Reach for a reference file whenever a task goes beyond the quick patterns below —
+e.g. subfigures and layout grids (`references/figures.md`), gt/gtsummary tables
+(`references/tables.md`), or fragments/chalkboard/auto-animate in revealjs
+(`references/revealjs.md`).
+
+## Quick Start: Document
 
 ```yaml
 ---
@@ -29,454 +57,237 @@ title: "My Report"
 author: "Prof. Dr. Kamarul Imran Musa"
 date: today
 format: html
+execute:
+  echo: false
+  warning: false
 ---
 ```
 
-Common top-level YAML keys:
+```{r}
+#| label: fig-boxplot
+#| fig-cap: "Distribution of BMI by group"
+ggplot(data, aes(x = group, y = bmi)) +
+  geom_boxplot() +
+  theme_minimal()
+```
 
-| Key | Purpose |
-|-----|---------|
-| `title` | Document title |
-| `author` | Author name(s) |
-| `date` | Date (use `today` for auto date) |
-| `format` | Output format(s) |
-| `toc` | Table of contents (`true`/`false`) |
-| `number-sections` | Numbered headings |
-| `execute` | Global code execution options |
-| `bibliography` | Path to `.bib` file |
+See @fig-boxplot for the distribution.
 
----
-
-## 2. Output Formats
-
-Specify format at root level or with per-format options:
+## Quick Start: Slide Deck (RevealJS)
 
 ```yaml
-format: html          # simple single format
+---
+title: "Statistical Modelling in R"
+author: "Kamarul Imran Musa"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    incremental: true
+---
+```
+
+```markdown
+## Study Design
+
+- Retrospective cohort
+- n = 1,245 participants
+
+## Results
+
+::: {.fragment}
+The primary outcome was significant (p < 0.05).
+:::
+```
+
+A level-2 heading (`##`) starts a new slide. Full revealjs feature set — themes,
+transitions, fragments, backgrounds, speaker notes, chalkboard — is in
+`references/revealjs.md`.
+
+## Document Essentials
+
+### Output Formats
+
+```yaml
+format: html          # single format
 ```
 
 ```yaml
-format:              # multiple formats with options
+format:              # multiple formats, per-format options
   html:
     code-fold: true
-    html-math-method: katex
     toc: true
   pdf:
-    geometry:
-      - top=30mm
-      - left=30mm
+    geometry: margin=25mm
   docx:
     default
 ```
 
-**Common formats:** `html`, `pdf`, `docx`, `revealjs`, `pptx`, `beamer`, `gfm`
-
-> For PDF output, LaTeX is required. Install TinyTeX via:
-> ```bash
-> quarto install tinytex
-> ```
-
-**Rendering in RStudio:**
-- Click **Render** button (or `Shift+Cmd+K` / `Shift+Ctrl+K`)
-- Enable **Render on Save** for live preview
-- Render to multiple formats from R:
+Common formats: `html`, `pdf` (requires `quarto install tinytex`), `docx`, `revealjs`,
+`pptx`, `beamer`, `gfm`. Render from R with:
 
 ```r
 quarto::quarto_render("report.qmd", output_format = c("html", "pdf", "docx"))
 ```
 
----
-
-## 3. Code Chunks (Knitr / R)
-
-### Basic chunk
+### Code Chunks
 
 ````
 ```{r}
 #| label: my-chunk
 #| echo: true
 #| warning: false
-
 library(tidyverse)
 mtcars |> summarise(mean_mpg = mean(mpg))
 ```
 ````
 
-### Key chunk options (use `#|` prefix — Quarto style)
+Key options: `label`, `echo`, `eval`, `warning`, `message`, `include`, `error`, `cache`,
+`fig-width`/`fig-height`/`fig-cap`/`fig-alt`, `output`. Set defaults globally with an
+`execute:` block in the YAML; override per-chunk. Details, caching, and Python/Observable
+JS chunks: `references/computations.md`.
 
-| Option | Values | Effect |
-|--------|--------|--------|
-| `label` | string | Chunk identifier (required for cross-ref) |
-| `echo` | `true`/`false`/`fenced` | Show/hide code |
-| `warning` | `true`/`false` | Show/hide warnings |
-| `message` | `true`/`false` | Show/hide messages |
-| `include` | `true`/`false` | Include all output |
-| `eval` | `true`/`false` | Run or skip chunk |
-| `error` | `true`/`false` | Continue on error |
-| `cache` | `true`/`false` | Cache results |
-| `fig-width` | number | Figure width (inches) |
-| `fig-height` | number | Figure height (inches) |
-| `fig-cap` | string | Figure caption |
-| `fig-alt` | string | Alt text for accessibility |
-| `output` | `true`/`false`/`asis` | Control output display |
-
-### Global execution options (in YAML)
-
-```yaml
-execute:
-  echo: false       # hide all code globally
-  warning: false
-  message: false
-  cache: true
-```
-
-Override globally for a specific chunk with the `#| echo: true` option in the chunk.
-
-### Code folding (HTML)
-
-```yaml
-format:
-  html:
-    code-fold: true      # fold/hide code, user can expand
-    code-tools: true     # global show/hide code toggle
-    code-link: true      # hyperlink functions to docs (knitr only)
-```
-
----
-
-## 4. Figures
-
-### Basic figure from image file
+### Figures
 
 ```markdown
 ![Caption text](path/to/image.png){width=80% fig-align="center"}
 ```
-
-Attributes: `width`, `height`, `fig-align` (`left`/`center`/`right`), `fig-alt`, `.lightbox`
-
-### Figure from R code chunk
 
 ````
 ```{r}
 #| label: fig-boxplot
 #| fig-cap: "Distribution of BMI by group"
 #| fig-alt: "Boxplot showing BMI distribution across three groups"
-#| fig-width: 6
-#| fig-height: 4
-
-ggplot(data, aes(x = group, y = bmi)) +
-  geom_boxplot() +
-  theme_minimal()
 ```
 ````
 
-> The `label` must start with `fig-` for cross-referencing to work.
+The `label` must start with `fig-` for `@fig-boxplot` cross-references to work.
+Subfigures, layout grids, lightbox, and LaTeX figure options: `references/figures.md`.
 
-### Multiple figures / subfigures side by side
-
-````
-```{r}
-#| label: fig-combined
-#| fig-cap: "City and highway mileage"
-#| fig-subcap:
-#|   - "Coloured by cylinders"
-#|   - "Coloured by displacement"
-#| layout-ncol: 2
-#| column: page
-
-plot1_code
-plot2_code
-```
-````
-
-### Figure sizing units
+### Tables
 
 ```markdown
-![](image.png){width=300}        # pixels (default)
-![](image.png){width=80%}        # percentage
-![](image.png){width=4in}        # inches
-```
-
-### Lightbox (HTML only)
-
-```markdown
-![An elephant](elephant.png){.lightbox}
-```
-
----
-
-## 5. Cross-References
-
-Cross-references require labels with appropriate prefixes.
-
-| Type | Label prefix | Reference syntax |
-|------|-------------|-----------------|
-| Figure | `fig-` | `@fig-label` |
-| Table | `tbl-` | `@tbl-label` |
-| Section | any | `@sec-label` |
-| Equation | `eq-` | `@eq-label` |
-
-Example:
-
-```markdown
-See @fig-boxplot for the distribution.
-
-As shown in @tbl-summary, the prevalence was 23%.
-```
-
-For sections, add `{#sec-intro}` after the heading:
-
-```markdown
-## Introduction {#sec-intro}
-```
-
----
-
-## 6. Tables
-
-### Simple markdown table
-
-```markdown
-| Variable | n | % |
-|----------|---|---|
+| Variable | n   | %    |
+|----------|----:|-----:|
 | Male     | 120 | 48.0 |
-| Female   | 130 | 52.0 |
 
 : Frequency distribution of sex {#tbl-sex}
 ```
 
-### R-generated tables with cross-reference
-
 ````
 ```{r}
 #| label: tbl-summary
-#| tbl-cap: "Descriptive statistics"
-
+#| tbl-cap: "Baseline characteristics"
 library(gtsummary)
-trial |>
-  select(age, grade, response) |>
-  tbl_summary()
+trial |> tbl_summary(by = group)
 ```
 ````
 
----
+gt/gtsummary/DT patterns, column widths, and grid tables: `references/tables.md`.
 
-## 7. Equations
+### Cross-References
 
-Inline: `$y = \beta_0 + \beta_1 x + \epsilon$`
+| Type | Label prefix | Reference |
+|------|-------------|-----------|
+| Figure | `fig-` | `@fig-label` |
+| Table | `tbl-` | `@tbl-label` |
+| Section | any (`{#sec-label}`) | `@sec-label` |
+| Equation | `eq-` | `@eq-label` |
 
-Display block:
-
-```markdown
-$$
-\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2
-$$ {#eq-regression}
-```
-
----
-
-## 8. Callout Blocks
+### Callouts
 
 ```markdown
 ::: {.callout-note}
 This is a note callout.
 :::
 
-::: {.callout-warning}
-Watch out for missing data.
-:::
-
 ::: {.callout-tip title="Pro Tip"}
 Use `gtsummary` for publication-ready tables.
 :::
-
-::: {.callout-important}
-Interpret with caution.
-:::
 ```
 
-Types: `callout-note`, `callout-tip`, `callout-warning`, `callout-caution`, `callout-important`
+Types: `callout-note`, `callout-tip`, `callout-warning`, `callout-caution`, `callout-important`.
 
----
-
-## 9. Citations & Bibliography
-
-Add bibliography file to YAML:
+### Citations
 
 ```yaml
 bibliography: references.bib
-csl: apa.csl   # optional citation style
+csl: apa.csl
 ```
-
-Cite in text:
 
 ```markdown
 This finding is consistent with prior studies [@Smith2020; @Jones2021].
-
-Smith et al. [-@Smith2020] reported similar results.
 ```
 
-In RStudio Visual Editor: use **Insert > Citation** to search Zotero, DOI, or `.bib` file.
-
----
-
-## 10. Inline Code
-
-```markdown
-The mean age was `r round(mean(data$age), 1)` years.
-
-The sample size was `r nrow(data)` participants.
-```
-
-For Python inline: `` `{python} expr` ``
-
----
-
-## 11. Article Layout Options
-
-Control column width of content:
+### Page Layout (Margins, Wide Content)
 
 ```markdown
 ::: {.column-margin}
-Margin note or figure here.
-:::
-
-::: {.column-page}
-Full-page-width content.
-:::
-
-::: {.column-screen}
-Full-screen-width content.
+Margin note or small figure.
 :::
 ```
 
-Or per-chunk:
+Full set of column classes (`column-page`, `column-screen`, etc.) and website grid
+options: `references/page-layout.md`.
 
-```yaml
-#| column: page
-```
-
----
-
-## 12. Sections & Navigation
-
-```yaml
-toc: true
-toc-depth: 3
-number-sections: true
-toc-location: left   # for HTML: left, right, body
-```
-
----
-
-## 13. RevealJS Presentations
-
-```yaml
-format: revealjs
-```
-
-Section breaks become slides. Use `---` for horizontal dividers, `##` for new slides.
-
-```yaml
-format:
-  revealjs:
-    theme: dark          # default, dark, moon, sky, etc.
-    slide-number: true
-    incremental: true    # bullets appear one at a time
-    logo: logo.png
-    footer: "USM – Department of Community Medicine"
-    scrollable: true
-```
-
----
-
-## 14. Common Patterns for Epidemiology / Public Health Reports
-
-### Reproducible analysis report template
+### Front Matter (YAML)
 
 ```yaml
 ---
-title: "Epidemiological Analysis Report"
-author: "Prof. Dr. Kamarul Imran Musa"
+title: "Report"
+author:
+  - name: "Kamarul Imran Musa"
+    affiliation: "Universiti Sains Malaysia"
+    orcid: "0000-0000-0000-0000"
 date: today
-format:
-  html:
-    toc: true
-    toc-depth: 3
-    code-fold: true
-    code-tools: true
-    number-sections: true
-  pdf:
-    geometry:
-      - margin=25mm
-    number-sections: true
-  docx:
-    default
-execute:
-  echo: false
-  warning: false
-  message: false
-bibliography: references.bib
+abstract: >
+  Short summary of the document.
 ---
 ```
 
-### Typical section structure
+Author objects, format-specific vs shared keys, title-block styling, and `params`:
+`references/front-matter.md`.
 
-```markdown
-## Methods
+## Presentations & RevealJS
 
-### Study Design
-...
+Quarto renders the same slide markdown to `revealjs` (HTML, most feature-rich),
+`pptx` (editable PowerPoint), or `beamer` (LaTeX/PDF). Default to **revealjs** unless
+the user specifically needs an editable PowerPoint file or a static Beamer PDF.
 
-### Statistical Analysis
-All analyses were conducted using R version `r R.version$major`.`r R.version$minor`.
+- Slides are created from `##` headings or `---` dividers.
+- `::: {.notes}` blocks become speaker notes.
+- `::: {.fragment}` reveals content incrementally within a slide.
+- `{background-image="..."}` on a heading sets a full-bleed slide background.
 
-## Results
+General slide-authoring patterns (columns, incremental lists, code on slides) live in
+`references/presentations.md`. RevealJS-specific features (themes, transitions,
+fragments, auto-animate, backgrounds, chalkboard, speaker view, PDF export) live in
+`references/revealjs.md` — read it before building anything beyond a basic deck.
 
-### Descriptive Statistics
-
-```{r}
-#| label: tbl-descriptive
-#| tbl-cap: "Baseline characteristics of study participants"
-
-library(gtsummary)
-data |> tbl_summary(by = group)
-```
-
-### Primary Outcome
-
-```{r}
-#| label: fig-kaplan-meier
-#| fig-cap: "Kaplan-Meier survival curve by treatment group"
-#| fig-width: 7
-#| fig-height: 5
-```
-```
-
----
-
-## 15. Quick Reference Card
+## Quick Reference Card
 
 | Task | Syntax |
 |------|--------|
 | Heading | `# H1`, `## H2`, `### H3` |
-| Bold | `**text**` |
-| Italic | `*text*` |
-| Code inline | `` `code` `` |
-| R inline | `` `r expr` `` |
-| Link | `[text](url)` |
+| New slide (revealjs/pptx/beamer) | `## Heading` or `---` |
+| Bold / Italic | `**text**` / `*text*` |
+| R inline code | `` `r expr` `` |
 | Image | `![alt](path)` |
 | Cross-ref | `@fig-label`, `@tbl-label` |
 | Citation | `[@key]` |
 | Callout note | `::: {.callout-note}` |
-| Equation block | `$$...$$` |
-| Comment | `<!-- hidden text -->` |
-
----
+| Speaker notes | `::: {.notes}` |
+| Fragment (revealjs) | `::: {.fragment}` |
+| Margin content | `::: {.column-margin}` |
+| Equation block | `$$...$$ {#eq-label}` |
 
 ## Reference Files
 
-For deeper topics, read:
-- `references/figures.md` — Advanced figure layouts, lightbox, LaTeX figure options
-- `references/computations.md` — Caching, data frames, code linking details
-- `references/authoring.md` — Full authoring tutorial notes (multi-format, citations, equations)
+- `references/authoring.md` — general authoring tutorial (formats, rendering, citations, equations, tabsets)
+- `references/computations.md` — code execution, caching, data frame printing
+- `references/figures.md` — advanced figure layouts, subfigures, lightbox, LaTeX options
+- `references/tables.md` — grid tables, gt/gtsummary/DT, column widths
+- `references/front-matter.md` — YAML metadata, author objects, params
+- `references/page-layout.md` — column/margin layout classes, website grid options
+- `references/presentations.md` — general slide-authoring patterns across formats
+- `references/revealjs.md` — full revealjs feature reference
