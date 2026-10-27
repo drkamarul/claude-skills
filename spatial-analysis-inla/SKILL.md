@@ -1,22 +1,12 @@
 ---
 name: spatial-analysis-inla
 description: >
-  Bayesian spatial analysis in R with INLA (R-INLA): fit, interpret and assess
-  spatial models for Gaussian, Binomial and Poisson outcomes, for both areal
-  (polygon/lattice) data and point-referenced (geostatistical) data. Covers
-  inla(), f() latent models (iid, besag, bym, bym2, rw1, rw2, ar1, spde),
-  neighbourhood graphs (spdep::poly2nb, nb2INLA, inla.read.graph), the SPDE
-  approach (mesh, inla.spde2.pcmatern, inla.spde.make.A, inla.stack),
-  PC priors, posterior marginals (inla.tmarginal, inla.emarginal,
-  inla.pmarginal, inla.zmarginal), relative risks, odds ratios, exceedance
-  probabilities, spatial fraction, range, prediction/kriging maps, and model
-  assessment (DIC, WAIC, CPO/LCPO, PIT, marginal likelihood, kld, mesh and
-  prior sensitivity, cross-validation). Trigger on: INLA, R-INLA, integrated
-  nested Laplace approximation, disease mapping, BYM, BYM2, CAR model, ICAR,
-  SMR/SIR smoothing, small-area estimation, spatial Poisson regression,
-  spatial logistic regression, prevalence mapping, geostatistics, kriging,
-  SPDE, Matern field, Bayesian spatial model, spatio-temporal areal model.
-  Complements spatial-point-pattern-analysis, datamanagement and quarto-skill.
+  Bayesian spatial analysis in R with INLA (R-INLA) for Gaussian, binomial and
+  Poisson outcomes: areal disease mapping (besag, BYM, BYM2) and geostatistical
+  SPDE models, interpretation (RR, OR, exceedance probabilities, phi, range)
+  and model assessment (DIC, WAIC, CPO, PIT, sensitivity). Use for INLA,
+  disease mapping, small-area estimation, spatial Poisson or logistic
+  regression, prevalence mapping, kriging, or any Bayesian spatial model in R.
 ---
 
 # Spatial analysis with INLA in R
@@ -47,7 +37,9 @@ on function names. Details in
 
 ## Reference files
 
-Read the one that matches the task before writing code.
+Read the one that matches the task before writing code. If the `references/`
+folder is not next to this file, read them from
+<https://github.com/drkamarul/claude-skills/tree/main/spatial-analysis-inla/references>.
 
 | File | Read when |
 |---|---|
