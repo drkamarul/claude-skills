@@ -81,7 +81,9 @@ Ap    <- inla.spde.make.A(mesh, loc = coop)
 stk_p <- inla.stack(tag = "pred",
   data    = list(y = NA, ntrials = NA),
   A       = list(1, Ap),
-  effects = list(data.frame(b0 = 1, elev = grid_elev), s = s_idx))
+  effects = list(data.frame(b0 = rep(1, nrow(coop)),
+                            elev = rep(grid_elev, length.out = nrow(coop))),  # one row per prediction point
+                 s = s_idx))
 
 stk <- inla.stack(stk_e, stk_p)
 ```
@@ -170,7 +172,9 @@ pred <- data.frame(coop,
 pred$exc <- sapply(res$marginals.fitted.values[ip], \(m) 1 - inla.pmarginal(0.2, m))  # P(prev > 0.2)
 
 # Back to a raster (Moraga Ch. 9)
-sv <- terra::vect(as.matrix(pred[, 1:2]), atts = pred[, -(1:2)], crs = "EPSG:32628")
+# Coordinates are in km, so declare a km CRS (EPSG:32628 would mean metres and put the raster ~1000x off)
+sv <- terra::vect(as.matrix(pred[, 1:2]), atts = pred[, -(1:2)],
+                  crs = "+proj=utm +zone=28 +datum=WGS84 +units=km +no_defs")
 r_mean <- terra::rasterize(sv, template_raster_km, field = "mean", fun = mean)
 ```
 
@@ -196,5 +200,5 @@ form  <- y ~ 0 + b0 + x + f(s, model = spde, group = s.group,
 ```
 
 The field is replicated per time point with AR(1) correlation across time
-(Blangiardo et al. Sec. 4.2, Moraga Ch. 10). `Rho for s` is the temporal
+(Blangiardo et al. Sec. 4.2, Moraga Ch. 10). `GroupRho for s` is the temporal
 autocorrelation.

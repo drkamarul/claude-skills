@@ -48,7 +48,10 @@ Standardise covariates before fitting when you want effects on a common scale.
 Reported as **precisions** `tau = 1/sigma^2`. Convert:
 
 ```r
-sd_marg <- inla.tmarginal(\(x) 1 / sqrt(x), res$marginals.hyperpar[["Precision for idarea"]])
+# Transform the internal log-precision; 1/sqrt() on the precision marginal fails
+# ("NaNs produced", "missing value where TRUE/FALSE needed") when its tail is long
+sd_marg <- inla.tmarginal(\(x) exp(-x / 2), res$internal.marginals.hyperpar[["Log precision for idarea"]])
+# Gaussian residual SD: "Log precision for the Gaussian observations"
 inla.zmarginal(sd_marg)
 ```
 
@@ -62,7 +65,7 @@ inla.zmarginal(sd_marg)
 | `Range for s` (pcmatern) | Practical range of the Matérn field | Distance (mesh units, e.g. km) beyond which correlation < 0.1 |
 | `Stdev for s` (pcmatern) | Marginal SD of the field | Size of spatial variation on linear-predictor scale |
 | `Theta1 for s`, `Theta2 for s` (matern) | Internal log(tau), log(kappa) | Do not interpret; use `inla.spde2.result()` |
-| `Rho for ...` | AR(1) correlation | Temporal persistence |
+| `Rho for x` (ar1 `f()` term), `GroupRho for s` (`control.group = list(model = "ar1")`) | AR(1) correlation | Temporal persistence |
 | `Precision for ID.year` (rw1/rw2) | Smoothness of the time trend | Larger = smoother |
 
 ### Spatial fraction with the original BYM

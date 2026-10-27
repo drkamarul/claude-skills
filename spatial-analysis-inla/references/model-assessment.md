@@ -21,10 +21,13 @@ sum(res$cpo$failure > 0, na.rm = TRUE)   # unreliable CPO values
 
 - Large `kld` or concern about accuracy (common with sparse binomial/Poisson
   data): refit with `control.inla = list(strategy = "laplace")` and compare.
-- Hyperparameter marginals look rough: `res <- inla.hyperpar(res)` or
-  `control.inla = list(int.strategy = "grid")`.
-- CPO failures: `res <- inla.cpo(res)` recomputes them (slow: one refit per
-  failure; `force = TRUE` recomputes all). Many failures signal a mis-specified
+- Hyperparameter marginals look rough: refit with
+  `control.inla = list(int.strategy = "grid")`. (`inla.hyperpar()` is skipped in
+  the default compact mode and deprecated in classic mode; do not use it.)
+- CPO failures: flags are common in the default compact mode (33 of 56 on a
+  Scotland BYM2 test) and recomputing them with `res <- inla.cpo(res)` changed
+  values only in the 3rd-4th significant digit but took about 12 minutes. Read
+  LCPO together with the failure count. Many failures signal a mis-specified
   likelihood (e.g. non-integer counts in a Poisson model; KIM, inla-poisson.qmd).
   Report the number rather than hiding it.
 
@@ -100,7 +103,7 @@ plot(dat$Y, res$summary.fitted.values$mean * dat$E,   # Poisson with E: counts
 ```r
 set.seed(1)
 s   <- inla.posterior.sample(500, res)                 # needs config = TRUE
-eta <- sapply(s, \(x) x$latent[grep("^Predictor", rownames(x$latent))])  # with a stack, use "^APredictor" rows for the data
+eta <- sapply(s, \(x) x$latent[grep("^Predictor", rownames(x$latent))])  # with a stack, take "^APredictor" rows and subset them with inla.stack.index(stk, "est")$data
 yrep <- apply(eta, 2, \(e) rpois(length(e), dat$E * exp(e)))   # Poisson; use rbinom / rnorm as needed
 c(obs_var = var(dat$Y), rep_var_mean = mean(apply(yrep, 2, var)))
 mean(apply(yrep, 2, \(y) mean(y == 0)) >= mean(dat$Y == 0))     # zeros check
@@ -136,14 +139,14 @@ fit_prior <- function(pr) inla(
   control.predictor = list(compute = TRUE), control.compute = list(waic = TRUE))
 ma <- fit_prior(pc_a); mb <- fit_prior(pc_b)
 rbind(Moraga = ma$summary.fixed[, "mean"], KIM = mb$summary.fixed[, "mean"])
-rbind(ma$summary.hyperpar["Phi for idarea", ], mb$summary.hyperpar["Phi for idarea", ])
+rbind(Moraga = ma$summary.hyperpar["Phi for idarea", ], KIM = mb$summary.hyperpar["Phi for idarea", ])
 ```
 
 Signs of prior dominance: posterior close to the prior (plot both), very wide
 posterior for a precision (KIM's NY8 example: default loggamma gave a
 precision posterior mean 3712 with SD 11264).
 
-Use `inla.priors.used(res)` to print the priors actually applied.
+Use `inla.priors.used(res)` to print the priors actually applied (the output is long).
 
 ### Mesh (SPDE only)
 

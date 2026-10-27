@@ -141,7 +141,7 @@ predict) is in [references/geostatistical-spde.md](references/geostatistical-spd
 | `summary(res)` | Fixed effects, hyperparameters, DIC/WAIC, marginal log-likelihood, run time |
 | `res$summary.fixed` | mean, sd, 0.025/0.5/0.975 quantiles, mode, `kld` for intercept and covariates (linear-predictor scale) |
 | `res$summary.random$idarea` | Posterior of each area/node effect. For `bym2`/`bym`: rows `1:n` = total effect, rows `(n+1):2n` = structured part only |
-| `res$summary.hyperpar` | Precisions (`1/variance`), `Phi` (bym2), `Range`/`Stdev` (pcmatern), `Rho` (ar1) |
+| `res$summary.hyperpar` | Precisions (`1/variance`), `Phi` (bym2), `Range`/`Stdev` (pcmatern), `Rho for x` (ar1 term), `GroupRho for s` (`control.group` ar1) |
 | `res$summary.fitted.values` | Posterior of `g^{-1}(eta)`: RR, prevalence, or mean (needs `control.predictor = list(compute = TRUE)`) |
 | `res$summary.linear.predictor` | Posterior of `eta` |
 | `res$marginals.*` | Full marginal densities (two-column x, y matrices) for the functions `inla.*marginal()` |
@@ -158,9 +158,10 @@ summary mean, because `E[exp(beta)] != exp(E[beta])` and `E[1/tau] != 1/E[tau]`.
 t(sapply(res$marginals.fixed, function(m)
   inla.zmarginal(inla.tmarginal(exp, m), silent = TRUE)[c("mean", "quant0.025", "quant0.975")]))
 
-# SD of a random effect from its precision
-inla.zmarginal(inla.tmarginal(function(x) 1 / sqrt(x),
-                              res$marginals.hyperpar[["Precision for idarea"]]))
+# SD of a random effect from its precision: transform the internal log-precision
+# marginal (1/sqrt() on the precision marginal fails when its tail is very long)
+inla.zmarginal(inla.tmarginal(function(x) exp(-x / 2),
+                              res$internal.marginals.hyperpar[["Log precision for idarea"]]))
 
 # Exceedance probability P(RR_i > 1 | y) for every area
 map$exc <- sapply(res$marginals.fitted.values, function(m) 1 - inla.pmarginal(1, m))
@@ -200,12 +201,12 @@ map$exc <- sapply(res$marginals.fitted.values, function(m) 1 - inla.pmarginal(1,
 
 | Symptom | Cause / fix |
 |---|---|
-| `family = "poisson"` stops on non-integer y | Use `"xpoisson"`, or round as a sensitivity check |
+| `family = "poisson"` with non-integer y stops with "The inla program call crashed." | Use `"xpoisson"`, or round as a sensitivity check |
 | `mlik` of ICAR/BYM model looks far worse | Improper prior: marginal likelihood not comparable; use DIC/WAIC/LCPO |
 | `Error: f(idarea, ...) ... is used twice` | Duplicate the index variable for each `f()` |
 | Fitted values for prediction rows look like logits | Missing `link = 1` in `control.predictor` |
 | `marginals.fitted.values` is NULL | Add `return.marginals.predictor = TRUE` in `control.compute` |
-| Many `cpo$failure > 0` | Run `res <- inla.cpo(res)` to recompute those CPOs; if many remain, model is mis-specified |
+| Many `cpo$failure > 0` | Common in INLA's default compact mode (33 of 56 on Scotland BYM2) and recomputing rarely changes much; report the count with LCPO. `res <- inla.cpo(res)` recomputes them but is slow (minutes). Many failures with non-integer counts point to a mis-specified likelihood |
 | Crash / "inla.core" error with SPDE | Mesh too fine or coordinates in metres/degrees; coarsen `max.edge`, add `cutoff`, project to km |
 | Phi posterior hugging prior | Data carry little information about spatial vs unstructured split; report it, do not over-interpret |
 | Range larger than the study region | Spatial field is nearly a constant trend; consider a covariate or coarser model; check mesh extension |

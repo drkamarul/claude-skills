@@ -44,7 +44,7 @@ where a reader could think the sources disagree.
 | Grid projection | (rasterize predictions at points) | `inla.mesh.projector` / `inla.mesh.project` | `fm_evaluator` / `fm_evaluate` | fmesher names; old names listed |
 | Two-step fit for big grids | — | `control.mode = list(theta = mod.mode$mode$theta, restart = FALSE)` | same | Agree |
 | Model comparison | DIC (Ch. 4) | DIC | DIC + WAIC; PIT histogram and LCPO (Gambia); warns marginal likelihood not comparable under improper priors; DIC differences < ~2 are noise | Skill includes all of these; K's warnings are additions, not conflicts |
-| Poisson with non-integer counts | — | — | `family = "xpoisson"` because `"poisson"` stops on non-integer y in current INLA | Added as K's guidance (M and B do not cover it); verify on the user's INLA version |
+| Poisson with non-integer counts | — | — | `family = "xpoisson"` because `"poisson"` stops on non-integer y in current INLA | Added as K's guidance (M and B do not cover it); confirmed on INLA 26.06.08 (error text: "The inla program call crashed.") |
 | Leroux / SLM | — | — | `generic1` with `C = I - ICAR`; `slm` model | Added as optional models from K |
 | Confounding / effect size | — | — | Spatial confounding (SD inflation); report per-IQR RR | Added as interpretation guidance from K |
 
@@ -56,11 +56,13 @@ where a reader could think the sources disagree.
 - `control.family = list(link = "logit")` for binomial (M, K agree).
 - Exceedance threshold on a transformed scale (B: log PM10; K: `log(50)`).
 
-## Not verified in this session
+## Tested
 
-The R code in the skill was not executed here (no R/INLA in the build
-environment). Function names, arguments and result-slot names were checked
-against the sources above and the fmesher conversion vignette
-(<https://cran.r-project.org/web/packages/fmesher/vignettes/inla_conversion.html>).
-Run the templates once on a known dataset (e.g. `SpatialEpi::scotland`,
-`geoR::gambia`) after any major INLA upgrade.
+All templates were run on 2026-10-27 with R 4.6.0 (Windows 11), INLA 26.06.08
+(compact mode), fmesher 0.8.0, sf 1.1.3, spdep 1.4.2, terra 1.9.50, geoR 1.9.6,
+inlabru 2.15.0 and SpatialEpi 1.2.8, on `SpatialEpi::scotland` (areal Poisson,
+binomial, Gaussian, Leroux, space-time) and `geoR::gambia` (SPDE binomial,
+Gaussian, Poisson, space-time). Failures found in that run were corrected.
+Reference results: Scotland BYM2 AFF beta 4.62 (95% CrI 1.96-7.23), Phi 0.75,
+DIC 450.6 / 313.1 / 301.0 (fixed / iid / bym2); Gambia SPDE range 23.0 km
+(10.9-43.4), Stdev 0.98 on a 459-node mesh. Re-run after a major INLA upgrade.

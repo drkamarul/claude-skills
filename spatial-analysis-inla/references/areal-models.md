@@ -38,7 +38,7 @@ c(islands    = sum(card(nb) == 0),
   components = n.comp.nb(nb)$nc)
 
 nb2INLA("map.adj", nb)                # write INLA graph file
-g <- inla.read.graph("map.adj")       # or: g <- as(nb2mat(nb, style = "B"), "Matrix")
+g <- inla.read.graph("map.adj")       # or: g <- as(nb2mat(nb, style = "B", zero.policy = TRUE), "Matrix")
 ```
 
 - **Islands** (0 neighbours): add links by hand (e.g. nearest neighbour via
@@ -67,7 +67,7 @@ tutorial uses exactly this ladder).
 Leroux construction (KIM, inla-poisson.qmd):
 
 ```r
-W    <- as(nb2mat(nb, style = "B"), "Matrix")
+W    <- as(nb2mat(nb, style = "B", zero.policy = TRUE), "Matrix")  # zero.policy needed if there are islands
 ICAR <- Diagonal(nrow(W), rowSums(W)) - W     # ICAR structure matrix
 C    <- Diagonal(nrow(W), 1) - ICAR           # generic1 needs max eigenvalue 1
 max(eigen(C)$values)                          # check: 1
@@ -138,6 +138,10 @@ res_g <- inla(form, family = "gaussian", data = dat,
 - `Precision for the Gaussian observations` is the residual (nugget) precision.
 - If area means are based on different sample sizes, pass `scale = n_i` so the
   residual precision is `tau * n_i`.
+- With one value per area, the Gaussian noise and the bym2 unstructured part are
+  barely identifiable (in a Scotland test the noise precision 95% CrI ran from 6 to 7729).
+  Fix the noise with known sampling variances via `scale = n_i` (or a fixed precision),
+  or drop one of the two terms.
 
 ## 5. Spatio-temporal areal models
 
@@ -146,7 +150,8 @@ one row per area-time.
 
 ```r
 lbw <- lbw |>
-  mutate(ID.area  = as.integer(factor(area)),  ID.area1 = ID.area,
+  mutate(ID.area  = match(area, map$area_code),  # graph order, NOT factor()/alphabetical order
+         ID.area1 = ID.area,
          ID.year  = year - min(year) + 1,      ID.year1 = ID.year,
          ID.area.year = row_number())
 
@@ -155,7 +160,7 @@ f1 <- y ~ 1 + f(ID.area, model = "bym2", graph = g, hyper = pc_bym2) +
           f(ID.area1, ID.year, model = "iid") + ID.year
 # (2) Knorr-Held, no interaction: structured + unstructured time
 f2 <- y ~ 1 + f(ID.area, model = "bym2", graph = g, hyper = pc_bym2) +
-          f(ID.year, model = "rw1") + f(ID.year1, model = "iid")
+          f(ID.year, model = "rw1", scale.model = TRUE) + f(ID.year1, model = "iid")
 # (3) + type I interaction (iid x iid)
 f3 <- update(f2, . ~ . + f(ID.area.year, model = "iid"))
 ```

@@ -40,7 +40,7 @@ or `inla.doc("name")` for full documentation.
 | `control.inla = list(strategy = "simplified.laplace", int.strategy = "auto")` | Approximation (`gaussian`, `simplified.laplace` default, `laplace`, `adaptive`) and integration (`auto`, `grid`, `ccd`, `eb`) | M, B |
 | `control.mode = list(theta = fit0$mode$theta, restart = FALSE)` | Start (or fix) the hyperparameter mode from a previous fit, e.g. fit on the estimation stack then predict on the full stack | B |
 | `inla.set.control.fixed.default()` | Show default fixed-effect priors | M |
-| `inla.hyperpar(res)` | Refine hyperparameter marginals with a grid | M |
+| `inla.hyperpar(res)` | Refine hyperparameter marginals; skipped in compact mode and deprecated in classic mode (INLA 26) — use `control.inla = list(int.strategy = "grid")` instead | M |
 | `inla.rerun(res)` | Rerun starting from the current mode (use when `mode.status != 0`) | — |
 | `inla.cpo(res)` | Recompute CPO values flagged in `res$cpo$failure` | — |
 
@@ -121,7 +121,7 @@ element of `res$marginals.fixed`, `marginals.random`, `marginals.hyperpar`,
 
 | Function | Use | Source |
 |---|---|---|
-| `inla.tmarginal(fun, marg)` | Marginal of a transformation (e.g. `exp` for RR/OR, `function(x) 1/x` for variance, `function(x) 1/sqrt(x)` for SD) | M, B |
+| `inla.tmarginal(fun, marg)` | Marginal of a transformation (e.g. `exp` for RR/OR, `function(x) 1/x` for variance, `function(x) exp(-x/2)` on `internal.marginals.hyperpar` for SD) | M, B |
 | `inla.emarginal(fun, marg)` | Posterior expectation of `fun(x)` | M, B |
 | `inla.zmarginal(marg, silent = TRUE)` | Mean, sd and quantiles of a marginal | M |
 | `inla.pmarginal(q, marg)` | CDF: `1 - inla.pmarginal(c, marg)` is the exceedance probability P(x > c) | M, B |
