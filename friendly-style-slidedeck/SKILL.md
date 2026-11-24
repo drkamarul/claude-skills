@@ -5,7 +5,7 @@ description: "Build or revise a Quarto revealjs talk deck in KIM's friendly, sha
 
 # Friendly-style slide deck (Quarto revealjs)
 
-Use this when KIM asks for a talk, lecture or seminar deck, or asks to revise one, in "my style" or a friendly style. Also use the quarto-skill for Quarto syntax.
+Use this when KIM or other users ask for a talk, lecture or seminar deck, or ask to revise one, in "my style" or a friendly style. Also use the quarto-skill for Quarto syntax.
 
 ## 1. Plan before building
 
@@ -19,7 +19,7 @@ Use this when KIM asks for a talk, lecture or seminar deck, or asks to revise on
 KIM is **sharing experience, not teaching**.
 
 - First person: "I use…", "In my experience…", "What works for me…", "Mistakes I see".
-- Short sentences KIM can say aloud. One idea per bullet. Aim for ≤ ~40 words of body text per slide.
+- Short sentences KIM or user can say aloud. One idea per bullet. Aim for ≤ ~40 words of body text per slide.
 - Professional but friendly, never authoritative: avoid "must", "never do", "you should". Prefer "I always…", "I try…", "Please don't take it lightly".
 - Mistakes are written as **mistake → fix** (e.g. "Trusting every answer → don't trust; always verify").
 - Explain each technical term in plain words the first time.
@@ -30,7 +30,6 @@ KIM is **sharing experience, not teaching**.
 ## 3. Structure and slide-count rules
 
 - Respect the slide limit strictly (count title and reference slides). If content doesn't fit one slide, **split** into (1/2), (2/2) rather than shrinking the font.
-- To make room: remove hands-on/demo blocks first, then **merge** overlapping slides (e.g. two step slides into one table; tips into the concept slide), then drop section-divider slides and use a small part label on each slide instead.
 - Typical order: Title → About me → Today's plan → Why (motivation) → Parts A/B/C → Take-home habits → References → Thank you · Questions.
 - Bio slide: title line, then KIM's chosen facts as bullets; book card and website/LinkedIn card on the right.
 - Every slide (except the title) has speaker notes starting with a time stamp `[mm:ss–mm:ss]`, written in short spoken sentences. Leave a few minutes of buffer before Q&A.
@@ -270,4 +269,4 @@ $code-color: $c-magenta;
    - every `img` has alt text; every content slide has `aside.notes`
 3. Check every URL returns 200 and every DOI matches Crossref; record dates in `references.md`. Say plainly which links could not be checked.
 4. Update `AGENTS.md` (slide limit, tone rule) and add a dated section to `implementation_plan.md` with decisions, time budget and outline.
-5. Report to KIM: slide count, render status, checks, what changed, where the backup is.
+5. Report to KIM or user: slide count, render status, checks, what changed, where the backup is.
